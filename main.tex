@@ -1,0 +1,238 @@
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+%\documentclass[runningheads]{llncs}
+\documentclass[preprint,10pt]{sigplanconf}
+
+% packages
+\usepackage{xspace}
+\usepackage{ifthen}
+\usepackage{amsbsy}
+\usepackage{amssymb}
+\usepackage{balance}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{needspace}
+\usepackage{microtype}
+\usepackage{bold-extra}
+\usepackage{array}
+\usepackage{epstopdf}
+
+
+% references
+\usepackage[colorlinks]{hyperref}
+\usepackage[all]{hypcap}
+\setcounter{tocdepth}{2}
+\hypersetup{
+	colorlinks=true,
+	urlcolor=black,
+	linkcolor=black,
+	citecolor=black,
+	plainpages=false,
+	bookmarksopen=true}
+
+\def\chapterautorefname{Chapter}
+\def\appendixautorefname{Appendix}
+\def\sectionautorefname{Section}
+\def\subsectionautorefname{Section}
+\def\figureautorefname{Figure}
+\def\tableautorefname{Table}
+\def\listingautorefname{Listing}
+
+% source code
+\usepackage{xcolor}
+\usepackage{textcomp}
+\usepackage{listings}
+\definecolor{source}{gray}{0.9}
+\lstset{
+	language={},
+	% characters
+	tabsize=3,
+	upquote=true,
+	escapechar={!},
+	keepspaces=true,
+	breaklines=true,
+	alsoletter={\#:},
+	breakautoindent=true,
+	columns=fullflexible,
+	showstringspaces=false,
+	basicstyle=\footnotesize\ttfamily,
+	% background
+	frame=single,
+    framerule=0pt,
+	backgroundcolor=\color{source},
+	% numbering
+	numbersep=5pt,
+	numberstyle=\tiny,
+	numberfirstline=true,
+	% captioning
+	captionpos=b,
+	% formatting (html)
+	moredelim=[is][\textbf]{<b>}{</b>},
+	moredelim=[is][\textit]{<i>}{</i>},
+	moredelim=[is][\color{red}\uwave]{<u>}{</u>},
+	moredelim=[is][\color{red}\sout]{<del>}{</del>},
+	moredelim=[is][\color{blue}\underline]{<ins>}{</ins>}}
+\newcommand{\ct}{\lstinline[backgroundcolor=\color{white},basicstyle=\footnotesize\ttfamily]}
+\newcommand{\lct}[1]{{\small\tt #1}}
+
+% tikz
+% \usepackage{tikz}
+% \usetikzlibrary{matrix}
+% \usetikzlibrary{arrows}
+% \usetikzlibrary{external}
+% \usetikzlibrary{positioning}
+% \usetikzlibrary{shapes.multipart}
+% 
+% \tikzset{
+% 	every picture/.style={semithick},
+% 	every text node part/.style={align=center}}
+% \tikzexternalize[prefix=figures/]{quality}
+
+% proof-reading
+\usepackage{xcolor}
+\usepackage[normalem]{ulem}
+\newcommand{\ra}{$\rightarrow$}
+\newcommand{\ugh}[1]{\textcolor{red}{\uwave{#1}}} % please rephrase
+\newcommand{\ins}[1]{\textcolor{blue}{\uline{#1}}} % please insert
+\newcommand{\del}[1]{\textcolor{red}{\sout{#1}}} % please delete
+\newcommand{\chg}[2]{\textcolor{red}{\sout{#1}}{\ra}\textcolor{blue}{\uline{#2}}} % please change
+\newcommand{\chk}[1]{\textcolor{ForestGreen}{#1}} % changed, please check
+
+% comments \nb{label}{color}{text}
+\newboolean{showcomments}
+\setboolean{showcomments}{true}
+\ifthenelse{\boolean{showcomments}}
+	{\newcommand{\nb}[3]{
+		{\colorbox{#2}{\bfseries\sffamily\scriptsize\textcolor{white}{#1}}}
+		{\textcolor{#2}{\sf\small$\blacktriangleright$\textit{#3}$\blacktriangleleft$}}}
+	 \newcommand{\version}{\emph{\scriptsize$-$Id$-$}}}
+	{\newcommand{\nb}[2]{}
+	 \newcommand{\version}{}}
+\newcommand{\rev}[2]{\nb{Reviewer #1}{red}{#2}}
+\newcommand{\ab}[1]{\nb{Alexandre}{blue}{#1}}
+\newcommand{\sv}[1]{\nb{Santiago}{orange}{#1}}
+
+% graphics: \fig{position}{percentage-width}{filename}{caption}
+\DeclareGraphicsExtensions{.png,.jpg,.pdf,.eps,.gif}
+%\graphicspath{{figures/}}
+\newcommand{\fig}[4]{
+	\begin{figure}[#1]
+		\centering
+		\includegraphics[width=#2\textwidth]{#3}
+		\caption{\label{fig:#3}#4}
+	\end{figure}}
+\newcommand{\largefig}[4]{
+	\begin{figure*}[#1]
+		\centering
+		\includegraphics[width=#2\textwidth]{#3}
+		\caption{\label{fig:#3}#4}
+	\end{figure*}}
+
+% abbreviations
+\newcommand{\ie}{\emph{i.e.,}\xspace}
+\newcommand{\eg}{\emph{e.g.,}\xspace}
+\newcommand{\etc}{\emph{etc.}\xspace}
+\newcommand{\etal}{\emph{et al.}\xspace}
+
+% lists
+\newenvironment{bullets}[0]
+	{\begin{itemize}}
+	{\end{itemize}}
+
+\newcommand{\seclabel}[1]{\label{sec:#1}}
+\newcommand{\secref}[1]{Section~\ref{sec:#1}\xspace}
+\newcommand{\figlabel}[1]{\label{fig:#1}}
+\newcommand{\figref}[1]{Figure~\ref{fig:#1}\xspace}
+
+% D O C U M E N T
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+\begin{document}
+
+% T I T L E
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+
+\title{Extending Mondrian with Interactive HTML Visualisation}
+
+\authorinfo{Santiago Vidal}
+	{ISISTAN Research Institute, Faculty of Sciences, UNICEN University, Campus Universitario, Tandil, Buenos Aires, Argentina, Also CONICET}
+	{svidal@exa.unicen.edu.ar}
+\authorinfo{Alexandre Bergel}
+	{PLEIAD Lab, Department of Computer Science (DCC), University of Chile, Santiago, Chile}
+	{http://bergel.eu}
+\authorinfo{Claudia Marcos} 
+	{ISISTAN Research Institute, Faculty of Sciences, UNICEN University, Campus Universitario, Tandil, Buenos Aires, Argentina, Also CIC}
+	{cmarcos@exa.unicen.edu.ar}
+
+
+\maketitle
+
+% A B S T R A C T
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+
+\begin{abstract}
+\end{abstract}
+
+%: % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+\section{Introduction}\seclabel{introduction}
+
+%problem
+
+%solution
+
+%surprising result
+
+%contribution
+
+%\item lesson learnt
+
+%outline
+The paper is structured as follows.
+%\secref{problem} shows the problem we faced when trying to evolve Mondrian.
+%\secref{refactoring} describes the aspect-based solution we adopted.
+%\secref{results} presents the impact of our solution on Mondrian.
+%\secref{relatedWork} briefly revise the related work.
+%\secref{conclusion} concludes.
+
+
+%: % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+\section{Refactoring Mondrian to Enable the Extensions}\seclabel{problem}
+
+Implementation of the visitor pattern instead of the displayOn: methods
+Show some benchmarks. We have they in a mail with the subject bench
+
+%: % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+\section{Generating HTML Files using a Visulaization Library}\seclabel{refactoring}
+¿Why we use Protovis? ¿What is it?
+Explain the implementation of the Visitor pattern that collects the data to generate the HTML file.
+Also, what are the main benefics of using this kind of visualization.
+Supported graphs??
+Layouts
+%I used the layouts given by Mondrian
+labels and popup. 
+%I used Tipsy
+Handling interaction.
+%I reimplemented drag&drop
+solving performance issues
+% Some things changed in the drag & drop implementation
+Packaging the library files
+%: % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+\section{Future Works}\seclabel{results}
+being behind a seaside server
+
+
+%: % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+\section{Conclusion}\seclabel{conclusion}
+
+
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+%\section*{Acknowledgments}
+%
+%\small We gratefully thanks ...
+
+% bibliography
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+\bibliographystyle{abbrvnat}
+\bibliography{}
+
+\end{document}
