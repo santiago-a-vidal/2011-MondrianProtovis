@@ -204,7 +204,19 @@ The paper is structured as follows.
 %Show some benchmarks. We have they in a mail with the subject bench
 
 \section{Protovis}
-Short introduction of Protovis
+Protovis [REF] is a visualization toolkit written in JavaScript that allows the creation of complex and interactive graphics in web-browsers without the need of any plugin. The data to be visualized is defined by means of simple marks such as bars or lines or dots. 
+
+For this definition Protovis makes intesive use of functional programming [REF] through a declarative syntax. For example, to define a bar of \ct{height=100} and \ct{width=20} the following code must be used
+\begin{lstlisting} 
+new pv.Panel().width(150).height(150)
+  .add(pv.Bar)
+    .data([100])
+    .left(10).bottom(0)
+    .width(20).height(function(d) d)
+  .root.render();
+\end{lstlisting}
+where \ct{left} and \ct{bottom} define the panel position \ct{x,y} in which the figure is drawn. 
+
 
 %: % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 \section{Generating HTML Files using a Visualization Library}\seclabel{refactoring}
