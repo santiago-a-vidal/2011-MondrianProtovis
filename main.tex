@@ -204,7 +204,7 @@ The paper is structured as follows.
 %Show some benchmarks. We have they in a mail with the subject bench
 
 \section{Protovis}
-Protovis [REF] is a visualization toolkit written in JavaScript that allows the creation of complex and interactive graphics in web-browsers without the need of any plugin. The data to be visualized is defined by means of simple marks such as bars or lines or dots. 
+Protovis [REF] is a visualization toolkit written in JavaScript that allows the creation of complex and interactive graphics in web-browsers without the need of any plugin. The data to be visualized is defined by means of simple marks such as bars, lines or dots. 
 
 For this definition Protovis makes intesive use of functional programming [REF] through a declarative syntax. For example, to define a bar of \ct{height=100} and \ct{width=20} the following code must be used
 \begin{lstlisting} 
@@ -224,20 +224,43 @@ where \ct{left} and \ct{bottom} define the panel position \ct{x,y} in which the 
 \ab{We need some example. For example, how do you translate ``view nodes: MOShape withAllSubclasses''}
 \ab{view shape rectangle height: \#numberOfMethods; width: \#numberOfAttributes. view nodes: MOShape withAllSubclasses}
 
-\ab{Layout? Popup?}
+\ab{Layout? Popup?} \sv{I meant, the layout currently supported is the same than Mondrian. That is, we are copying the x,y position of each figure. Regarding the popup, I dind't use the tooltips provided by Protovis. Instead of that I use a tooltip library, called Tipsy, that support HTML code. }
 
-Explain the implementation of the Visitor pattern that collects the data to generate the HTML file.
-Also, what are the main benefics of using this kind of visualization.
-Supported graphs??
-Layouts
+Given a view generated with Mondrian Easel we want to be able to export it to an HTML file using the Protovis toolkit. In addition of obtaining a similar visualization graph, interaction with it (such as drag and drop) is required. The general scenario of exportation is: 
+\begin{enumerate}
+\item A user generates a view using Mondrian Easel
+\item A user chooses the option "Export as HTML"
+\item A file that re-create the view found in Mondrian Easel is generated using Protovis. 
+\end{enumerate}
+
+The generation of HTML files with Protovis visualizations in Mondrian involves two main steps: (1) the creation of the dataset that contains information on which to base the graph, and (2) the description of the marks to be drawn. The accomplishment of these steps is described in detail in the next sections. 
+
+\subsection{Generating the Datasets}
+The standard way to enter data to Protovis is by mean of a JSON (JavaScript Object Notation) description. Owing to the components to be exported are currently drawn in the Mondrian Easel canvas, the dataset description must be inferred from it. As the canvas data is represented by mean of the \ct{MOGraphElement} hierarchy, the dataset description is created through a Visitor pattern [REF GAMMA] as is shown in Figure \ref{fig:VisitorPattern}
+
+\begin{figure}
+\begin{centering}
+\includegraphics[bb=0bp 0bp 413bp 228bp,scale=0.60]{VisitorPattern} 
+\par\end{centering}
+
+\caption{Visitor Pattern.\label{fig:VisitorPattern}}
+
+\end{figure}     
+\sv{the examples proposed by Alexandre will be here}
+\sv{Explain the implementation of the Visitor pattern that collects the data to generate the HTML file.}
+
+\subsection{Describing the Marks}
+
+
+\sv{ what are the main benefits of using this kind of visualization.Supported graphs??Layouts.labels and popup.Handling interaction. solving performance issues. Packaging the library files}
+
 %I used the layouts given by Mondrian
-labels and popup. 
 %I used Tipsy
-Handling interaction.
 %I reimplemented drag&drop
-solving performance issues
 % Some things changed in the drag & drop implementation
-Packaging the library files
+
+
+Explicar la implementacion con un ejemplo
 %: % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 \section{Future Works}\seclabel{results}
 being behind a seaside server
