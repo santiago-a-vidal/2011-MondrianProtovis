@@ -236,7 +236,19 @@ Given a view generated with Mondrian Easel we want to be able to export it to an
 The generation of HTML files with Protovis visualizations in Mondrian involves two main steps: (1) the creation of the dataset that contains information on which to base the graph, and (2) the description of the marks to be drawn. The accomplishment of these steps is described in detail in the next sections. 
 
 \subsection{Generating the Datasets}
-The standard way to enter data to Protovis is by mean of a JSON (JavaScript Object Notation) description. Owing to the components to be exported are currently drawn in the Mondrian Easel canvas, the dataset description must be inferred from it. As the canvas data is represented by mean of the \ct{MOGraphElement} hierarchy, the dataset description is created through a Visitor pattern [REF GAMMA] as is shown in Figure \ref{fig:VisitorPattern}
+The standard way to enter data to Protovis is by mean of a JSON (JavaScript Object Notation) description. Owing to the components to be exported are currently drawn in the Mondrian Easel canvas, the dataset description must be inferred from it. As the canvas data is represented by mean of the \ct{MOGraphElement} hierarchy, the dataset description is created through a Visitor pattern [REF GAMMA] as is shown in Figure \ref{fig:VisitorPattern}.
+The JSON structure that we generate is created from the nodes and edges drawn in the canvas. For this reason the structure contains two arrays: nodes and links. The former contain a collection of objects that represent nodes by means of information that allows its correct visualization with Protovis. For example, given the next JSON object a node is specified
+\begin{lstlisting} 
+{
+ nodeID:0, nodeShape:"a MORectangleShape", 
+ nodeName:"CharacterSet", 
+ nodeWidth:5.0, nodeHeight:18, 
+ x:5.0, y:241, 
+ nodeFillColor:"#F8F8F8", nodeBorderColor:"#000000", 
+ nodeType:"parent"
+}
+\end{lstlisting}
+where \ct{nodeID} is a number that identifies a node uniquely. The variable \ct{nodeShape} indicates the kind of shape that must be drawn (in this case a rectangle).Other possible shapes are, for example, circle, label, or an image. The variable \ct{nodeName} contains the text to be displayed by the tooltip of the node. The size of a shape is indicated by \ct{nodeWidth} and \ct{nodeHeight}. The variables \ct{x} and \ct{y} are used to know the position of the canvas in which the node will be displayed. The fill and border colors of a node are indicated through the variables \ct{nodeFillColor} and \ct{nodeBorderColor}. Finally, the variable \ct{nodeType} indicate if 
 
 \begin{figure}
 \begin{centering}
