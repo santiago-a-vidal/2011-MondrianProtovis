@@ -206,7 +206,7 @@ The paper is structured as follows.
 \section{Protovis}
 Protovis\footnote{\url{http://vis.stanford.edu/protovis}} is a visualization toolkit written in JavaScript that allows the creation of complex and interactive graphics in web-browsers without the need of any plugin. The data to be visualized is defined by means of simple marks such as bars, lines or dots. 
 
-For this definition Protovis makes intensive use of functional programming [REF] through a declarative syntax. For example, to define a bar of \ct{height=100} and \ct{width=20} the following code must be used
+For this definition Protovis makes intensive use of functional programming [REF] through a declarative syntax. For example, to define a bar of \ct{height=100} and \ct{width=20} (Figure \ref{fig:SimpleBar}) the following code must be used
 \begin{lstlisting} 
 new pv.Panel().width(150).height(150)
   .add(pv.Bar)
@@ -215,8 +215,16 @@ new pv.Panel().width(150).height(150)
     .width(20).height(function(d) d)
   .root.render();
 \end{lstlisting}
-where \ct{left} and \ct{bottom} define the panel position \ct{x,y} in which the figure is drawn. 
+where \ct{left} and \ct{bottom} define the panel position \ct{x,y} in which the figure is drawn.
 \ab{What is the visual effect of this? Can you add a screenshot of the result in a web browser}
+\begin{figure}
+\begin{raggedright}
+\includegraphics[bb=20bp 743bp 100bp 812bp,scale=0.99]{SimpleBar} 
+\par\end{raggedright}
+
+\caption{Simple Visualization with Protovis.\label{fig:SimpleBar}}
+
+\end{figure}  
 
 %: % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 \section{Generating HTML Files using a Visualization Library}\seclabel{refactoring}
@@ -248,7 +256,8 @@ The JSON structure that we generate is created from the nodes and edges drawn in
  nodeType:"parent"
 }
 \end{lstlisting}
-where \ct{nodeID} is a number that identifies a node uniquely. The variable \ct{nodeShape} indicates the kind of shape that must be drawn (in this case a rectangle).Other possible shapes are, for example, circle, label, or an image. The variable \ct{nodeName} contains the text to be displayed by the tooltip of the node. The size of a shape is indicated by \ct{nodeWidth} and \ct{nodeHeight}. The variables \ct{x} and \ct{y} are used to know the position of the canvas in which the node will be displayed. The fill and border colors of a node are indicated through the variables \ct{nodeFillColor} and \ct{nodeBorderColor}. Finally, the variable \ct{nodeType} indicate if 
+where \ct{nodeID} is a number that identifies a node uniquely. The variable \ct{nodeShape} indicates the kind of shape that must be drawn (in this case a rectangle).Other possible shapes are, for example, circle, label, or an image. The variable \ct{nodeName} contains the text to be displayed by the tooltip of the node. The size of a shape is indicated by \ct{nodeWidth} and \ct{nodeHeight}. The variables \ct{x} and \ct{y} are used to know the position of the canvas in which the node will be displayed. The fill and border colors of a node are indicated through the variables \ct{nodeFillColor} and \ct{nodeBorderColor}. Finally, the variable \ct{nodeType} indicate if the node is a leaf on a hierarchy or not. This variable is used to interaction purposes.
+\sv{I don't know if this is clear. I used this variable to redraw correctly after a drag and drop interaction. For example, if a parent node is dragged in a DistributionMap graph, the children must be redrawn accordingly}
 
 \begin{figure}
 \begin{centering}
