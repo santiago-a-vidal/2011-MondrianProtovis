@@ -204,9 +204,9 @@ The paper is structured as follows.
 %Show some benchmarks. We have they in a mail with the subject bench
 
 \section{Protovis}
-Protovis [REF] is a visualization toolkit written in JavaScript that allows the creation of complex and interactive graphics in web-browsers without the need of any plugin. The data to be visualized is defined by means of simple marks such as bars, lines or dots. 
+Protovis\footnote{\url{http://vis.stanford.edu/protovis}} is a visualization toolkit written in JavaScript that allows the creation of complex and interactive graphics in web-browsers without the need of any plugin. The data to be visualized is defined by means of simple marks such as bars, lines or dots. 
 
-For this definition Protovis makes intesive use of functional programming [REF] through a declarative syntax. For example, to define a bar of \ct{height=100} and \ct{width=20} the following code must be used
+For this definition Protovis makes intensive use of functional programming [REF] through a declarative syntax. For example, to define a bar of \ct{height=100} and \ct{width=20} the following code must be used
 \begin{lstlisting} 
 new pv.Panel().width(150).height(150)
   .add(pv.Bar)
@@ -216,7 +216,7 @@ new pv.Panel().width(150).height(150)
   .root.render();
 \end{lstlisting}
 where \ct{left} and \ct{bottom} define the panel position \ct{x,y} in which the figure is drawn. 
-
+\ab{What is the visual effect of this? Can you add a screenshot of the result in a web browser}
 
 %: % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 \section{Generating HTML Files using a Visualization Library}\seclabel{refactoring}
@@ -224,7 +224,7 @@ where \ct{left} and \ct{bottom} define the panel position \ct{x,y} in which the 
 \ab{We need some example. For example, how do you translate ``view nodes: MOShape withAllSubclasses''}
 \ab{view shape rectangle height: \#numberOfMethods; width: \#numberOfAttributes. view nodes: MOShape withAllSubclasses}
 
-\ab{Layout? Popup?} \sv{I meant, the layout currently supported is the same than Mondrian. That is, we are copying the x,y position of each figure. Regarding the popup, I dind't use the tooltips provided by Protovis. Instead of that I use a tooltip library, called Tipsy, that support HTML code. }
+\ab{Layout? Popup?} \sv{I meant, the layout currently supported is the same than Mondrian. That is, we are copying the x,y position of each figure. Regarding the popup, I dind't use the tooltips provided by Protovis. Instead of that I use a tooltip library, called Tipsy, that support HTML code. } \ab{Yes I know, but explain this a bit}
 
 Given a view generated with Mondrian Easel we want to be able to export it to an HTML file using the Protovis toolkit. In addition of obtaining a similar visualization graph, interaction with it (such as drag and drop) is required. The general scenario of exportation is: 
 \begin{enumerate}
@@ -263,7 +263,12 @@ The standard way to enter data to Protovis is by mean of a JSON (JavaScript Obje
 Explicar la implementacion con un ejemplo
 %: % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 \section{Future Works}\seclabel{results}
+
+\paragraph{Better interaction support.}
+
+\paragraph{Exposure via Seaside.}
 being behind a seaside server
+
 
 
 %: % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
