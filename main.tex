@@ -216,7 +216,7 @@ new pv.Panel().width(150).height(150)
   .root.render();
 \end{lstlisting}
 where \ct{left} and \ct{bottom} define the panel position \ct{x,y} in which the figure is drawn.
-\ab{What is the visual effect of this? Can you add a screenshot of the result in a web browser}
+%\ab{What is the visual effect of this? Can you add a screenshot of the result in a web browser}
 \begin{figure}
 \begin{raggedright}
 \includegraphics[bb=20bp 743bp 100bp 812bp,scale=0.99]{SimpleBar} 
@@ -229,11 +229,6 @@ where \ct{left} and \ct{bottom} define the panel position \ct{x,y} in which the 
 %: % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 \section{Generating HTML Files using a Visualization Library}\seclabel{refactoring}
 
-\ab{We need some example. For example, how do you translate ``view nodes: MOShape withAllSubclasses''}
-\ab{view shape rectangle height: \#numberOfMethods; width: \#numberOfAttributes. view nodes: MOShape withAllSubclasses}
-
-\ab{Layout? Popup?} \sv{I meant, the layout currently supported is the same than Mondrian. That is, we are copying the x,y position of each figure. Regarding the popup, I dind't use the tooltips provided by Protovis. Instead of that I use a tooltip library, called Tipsy, that support HTML code. } \ab{Yes I know, but explain this a bit}
-
 Given a view generated with Mondrian Easel we want to be able to export it to an HTML file using the Protovis toolkit. In addition of obtaining a similar visualization graph, interaction with it (such as drag and drop) is required. The general scenario of exportation is: 
 \begin{enumerate}
 \item A user generates a view using Mondrian Easel
@@ -241,10 +236,21 @@ Given a view generated with Mondrian Easel we want to be able to export it to an
 \item A file that re-create the view found in Mondrian Easel is generated using Protovis. 
 \end{enumerate}
 
+\sv{What are the main advantages of this kind of visualization. What are the contributions??}
+
 The generation of HTML files with Protovis visualizations in Mondrian involves two main steps: (1) the creation of the dataset that contains information on which to base the graph, and (2) the description of the marks to be drawn. The accomplishment of these steps is described in detail in the next sections. 
 
 \subsection{Generating the Datasets}
 The standard way to enter data to Protovis is by mean of a JSON (JavaScript Object Notation) description. Owing to the components to be exported are currently drawn in the Mondrian Easel canvas, the dataset description must be inferred from it. As the canvas data is represented by mean of the \ct{MOGraphElement} hierarchy, the dataset description is created through a Visitor pattern [REF GAMMA] as is shown in Figure \ref{fig:VisitorPattern}.
+
+\begin{figure}
+\begin{centering}
+\includegraphics[bb=0bp 0bp 413bp 228bp,scale=0.60]{VisitorPattern} 
+\par\end{centering}
+
+\caption{Visitor Pattern.\label{fig:VisitorPattern}}
+
+\end{figure}
 The JSON structure that we generate is created from the nodes and edges drawn in the canvas. For this reason the structure contains two arrays: nodes and links. The former contain a collection of objects that represent nodes by means of information that allows its correct visualization with Protovis. For example, given the next JSON object a node is specified
 \begin{lstlisting} 
 {
@@ -259,19 +265,67 @@ The JSON structure that we generate is created from the nodes and edges drawn in
 where \ct{nodeID} is a number that identifies a node uniquely. The variable \ct{nodeShape} indicates the kind of shape that must be drawn (in this case a rectangle).Other possible shapes are, for example, circle, label, or an image. The variable \ct{nodeName} contains the text to be displayed by the tooltip of the node. The size of a shape is indicated by \ct{nodeWidth} and \ct{nodeHeight}. The variables \ct{x} and \ct{y} are used to know the position of the canvas in which the node will be displayed. The fill and border colors of a node are indicated through the variables \ct{nodeFillColor} and \ct{nodeBorderColor}. Finally, the variable \ct{nodeType} indicate if the node is a leaf on a hierarchy or not. This variable is used to interaction purposes.
 \sv{I don't know if this is clear. I used this variable to redraw correctly after a drag and drop interaction. For example, if a parent node is dragged in a DistributionMap graph, the children must be redrawn accordingly}
 
-\begin{figure}
-\begin{centering}
-\includegraphics[bb=0bp 0bp 413bp 228bp,scale=0.60]{VisitorPattern} 
-\par\end{centering}
+Regarding the links, their structure is simpler than the nodes. Considerer the nex example in which a link is defined
+\begin{lstlisting} 
+{
+ sourceID:1, 
+ targetID:19,
+ edgeColor:"#9F9F9F",
+}
+\end{lstlisting}
+this object defines a link between the nodes whose IDs are 1 and 19 respectively. Also, the color of the link is specified by the object. 
 
-\caption{Visitor Pattern.\label{fig:VisitorPattern}}
+All the data needed to the generation of the dataset is taken from the classes \ct{MOEdge}, \ct{MONode}, and \ct{MORoot} when the visitor pattern runs through them iteratively.
 
-\end{figure}     
-\sv{the examples proposed by Alexandre will be here}
-\sv{Explain the implementation of the Visitor pattern that collects the data to generate the HTML file.}
+%\sv{Explain the implementation of the Visitor pattern that collects the data to generate the HTML file.}
 
 \subsection{Describing the Marks}
 
+Once the dataset is generated the Protovis JavaScript code that creates the visualization of the different kind of marks must be described. This process comprises: 
+\begin{itemize}
+\item Creation of the Protovis canvas
+\item Description of the marks to be drawn (nodes and links)
+\item Interaction behavior
+\item Layout specification
+\item Tooltip creation
+\end{itemize}
+
+The Protovis canvas is initially created with the same size as the canvas of Mondrian Easel. However, it is automatically resized when a dragging operation is detected out of it.
+
+As Protovis uses a declarative syntax each kind of mark is declared once. This is different only for lines which are declared individually for each link of the dataset. In this way to visualize nodes whose shape is \ct{MORectangleShape} the next code must be declared once
+\begin{lstlisting} 
+vis.add(pv.Bar)
+   .data(getNodesByShape("a MORectangleShape"))
+   .fillStyle(function(d) d.nodeFillColor)
+   .strokeStyle(function(d) d.nodeBorderColor)
+   .width(function(d)d.nodeWidth)
+   .height(function(d)d.nodeHeight)
+   .left(function(d) d.nodeType=="parent" ? d.x : (dataset.nodes[d.nodeParentID].x+d.x))
+   .top(function(d) d.nodeType=="parent" ? d.y : (dataset.nodes[d.nodeParentID].y+d.y))
+   .text(function(d)d.nodeName)
+   .cursor("move")
+   .event("mouseover", pv.Behavior.tipsy2({html: true}))
+   .event("mousedown", pv.Behavior.drag2());
+\end{lstlisting}
+
+As can be seen, in order of visualize a rectangular shape a Bar mark is used. The call to \ct{getNodesByShape}, inside the \ct{data} method, is used to retrieve only those nodes whose shape is \ct{MORectangleShape}. In regard to the following two methods \ct{fillStyle} and \ct{strokeStyle} they set the fill and border colors of the shape using the values found in the node declaration in the dataset. \sv{CONTINUE HERE}
+
+
+\begin{lstlisting} 
+vis.add(pv.Line)
+   .data(function(){return getPoints(dataset.links[0]);})
+   .left(function(d) d.x)
+   .top(function(d) d.y)
+   .strokeStyle(dataset.links[0].edgeColor);
+\end{lstlisting}
+
+
+\ab{We need some example. For example, how do you translate ``view nodes: MOShape withAllSubclasses''}
+\ab{view shape rectangle height: \#numberOfMethods; width: \#numberOfAttributes. view nodes: MOShape withAllSubclasses}
+
+\ab{Layout? Popup?} \sv{I meant, the layout currently supported is the same than Mondrian. That is, we are copying the x,y position of each figure. Regarding the popup, I dind't use the tooltips provided by Protovis. Instead of that I use a tooltip library, called Tipsy, that support HTML code. } \ab{Yes I know, but explain this a bit}
+
+\sv{the examples proposed by Alexandre will be here}
 
 \sv{ what are the main benefits of using this kind of visualization.Supported graphs??Layouts.labels and popup.Handling interaction. solving performance issues. Packaging the library files}
 
@@ -280,8 +334,6 @@ where \ct{nodeID} is a number that identifies a node uniquely. The variable \ct{
 %I reimplemented drag&drop
 % Some things changed in the drag & drop implementation
 
-
-Explicar la implementacion con un ejemplo
 %: % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 \section{Future Works}\seclabel{results}
 
