@@ -18,9 +18,11 @@
 \usepackage{epstopdf}
 
 
+
 % references
 \usepackage[colorlinks]{hyperref}
 \usepackage[all]{hypcap}
+
 \setcounter{tocdepth}{2}
 \hypersetup{
 	colorlinks=true,
@@ -144,6 +146,8 @@
 \newcommand{\figlabel}[1]{\label{fig:#1}}
 \newcommand{\figref}[1]{Figure~\ref{fig:#1}\xspace}
 
+\usepackage{subfig}
+\DeclareCaptionType{copyrightbox}
 % D O C U M E N T
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 \begin{document}
@@ -331,12 +335,26 @@ In this case the link is defined by a \ct{Line} mark. The data is generated thro
 
 \subsection{Supported Graphs}
 
+To properly visualize the exported graphs some additional files are needed such as the Protovis library or interaction handler files. However, this need is transparent for the users because the exporter created these files when they are needed. This was implemented by means of packaging the additional files in a compressed file and then creating a binary code of them through \ct{Base64MimeConverter}.
+
+Currently the export method to HTML files with Protovis supports all the Mondrian visualizations composed by graphics elements such as rectangles, lines, and labels. Examples of this kind of visualizations are distribution maps, inner nodes, blueprint classes or system complexity. 
+\sv{CONTINUE HERE}
+
+\begin{figure*}
+\subfloat[Mondrian]{\includegraphics[bb=15bp 700bp 225bp 810bp,clip,scale=0.95]{SistemComplexityMondrianEasel}
+
+}\subfloat[HTML]{\includegraphics[bb=15bp 710bp 210bp 810bp,clip]{SistemComplexityHTML}
+
+}
+
+\caption{Visualization of system complexity}
+
+
+\end{figure*}
+
+
 \ab{We need some example. For example, how do you translate ``view nodes: MOShape withAllSubclasses''}
 \ab{view shape rectangle height: \#numberOfMethods; width: \#numberOfAttributes. view nodes: MOShape withAllSubclasses}
-
-\ab{Layout? Popup?} \sv{I meant, the layout currently supported is the same than Mondrian. That is, we are copying the x,y position of each figure. Regarding the popup, I dind't use the tooltips provided by Protovis. Instead of that I use a tooltip library, called Tipsy, that support HTML code. } \ab{Yes I know, but explain this a bit}
-
-\sv{the examples proposed by Alexandre will be here}
 
 \sv{ what are the main benefits of using this kind of visualization.Supported graphs??Layouts.labels and popup.Handling interaction. solving performance issues. Packaging the library files}
 
