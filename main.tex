@@ -335,15 +335,15 @@ In this case the link is defined by a \ct{Line} mark. The data is generated thro
 
 \subsection{Supported Graphs}
 
-To properly visualize the exported graphs some additional files are needed such as the Protovis library or interaction handler files. However, this need is transparent for the users because the exporter created these files when they are needed. This was implemented by means of packaging the additional files in a compressed file and then creating a binary code of them through \ct{Base64MimeConverter}.
+To properly visualize the exported graphs some additional files are needed such as the Protovis library or interaction handler files. However, this need is transparent for the users because the exporter created these files when they are needed. This was implemented by means of packaging the additional files in a compressed file and then creating a binary code of them through \ct{Base64MimeConverter}. So, when an HTML file is exported, the compressed file is decoded an extracted in the same directory than the HTML file. 
 
 Currently the export method to HTML files with Protovis supports all the Mondrian visualizations composed by graphics elements such as rectangles, lines, and labels. Examples of this kind of visualizations are distribution maps, inner nodes, blueprint classes or system complexity. 
-\sv{CONTINUE HERE}
+For example a system complexity visualization shows the inheritance relationships between classes. The classes are represented through rectangles and the inheritance relationships are represented through lines (Figure \ref{fig:SistemComplexityMondrianEasel}). Additionally, the size of a class is represented by means of its height (number of methods), its width(number of attributes), and its color (number of lines of code). When this visualization is exported to an HTML file using Protovis the process described in the previous sections is run. So, a dataset and Protovis marks are described and the file is generated producing a similar visualization as is shown in Figure \ref{fig:SistemComplexityHTML}.
 
 \begin{figure*}
-\subfloat[Mondrian]{\includegraphics[bb=15bp 700bp 225bp 810bp,clip,scale=0.95]{SistemComplexityMondrianEasel}
+\subfloat[Mondrian]{\label{fig:SistemComplexityMondrianEasel}\includegraphics[bb=15bp 700bp 225bp 810bp,clip,scale=0.95]{SistemComplexityMondrianEasel}
 
-}\subfloat[HTML]{\includegraphics[bb=15bp 710bp 210bp 810bp,clip]{SistemComplexityHTML}
+}\subfloat[HTML]{\label{fig:SistemComplexityHTML}\includegraphics[bb=15bp 710bp 210bp 810bp,clip]{SistemComplexityHTML}
 
 }
 
@@ -355,8 +355,6 @@ Currently the export method to HTML files with Protovis supports all the Mondria
 
 \ab{We need some example. For example, how do you translate ``view nodes: MOShape withAllSubclasses''}
 \ab{view shape rectangle height: \#numberOfMethods; width: \#numberOfAttributes. view nodes: MOShape withAllSubclasses}
-
-\sv{ what are the main benefits of using this kind of visualization.Supported graphs??Layouts.labels and popup.Handling interaction. solving performance issues. Packaging the library files}
 
 %I used the layouts given by Mondrian
 %I used Tipsy
