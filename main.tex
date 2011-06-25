@@ -114,6 +114,7 @@
 \newcommand{\rev}[2]{\nb{Reviewer #1}{red}{#2}}
 \newcommand{\ab}[1]{\nb{Alexandre}{blue}{#1}}
 \newcommand{\sv}[1]{\nb{Santiago}{orange}{#1}}
+\newcommand{\TG}[1]{\nb{TG}{magenta}{#1}}
 
 % graphics: \fig{position}{percentage-width}{filename}{caption}
 \DeclareGraphicsExtensions{.png,.jpg,.pdf,.eps,.gif}
@@ -168,8 +169,8 @@
 	{ISISTAN Research Institute, Faculty of Sciences, UNICEN University, Campus Universitario, Tandil, Buenos Aires, Argentina, Also CIC}
 	{cmarcos@exa.unicen.edu.ar}
 \authorinfo{Tudor G\^irba} 
-	{Software Composition Group, University of Bern, Switzerland}
-	{girba@iam.unibe.ch}
+	{netstyle.ch GmbH, Switzerland}
+	{tudor@tudorgirba.com}
 
 
 \maketitle
@@ -195,6 +196,9 @@
 
 %outline
 The paper is structured as follows.
+
+\TG{I think it is hard to find anything scientific in this work. One idea is to position it as a tool demo (\ie engineering work). In any case, we need to describe the cases that posed a challenge. The angle can be that you basically built a transformation between the graph model of Mondrian and the model of Protovis.}
+
 %\secref{problem} shows the problem we faced when trying to evolve Mondrian.
 %\secref{refactoring} describes the aspect-based solution we adopted.
 %\secref{results} presents the impact of our solution on Mondrian.
@@ -209,9 +213,10 @@ The paper is structured as follows.
 %Show some benchmarks. We have they in a mail with the subject bench
 
 \section{Protovis}
-Protovis\footnote{\url{http://vis.stanford.edu/protovis}} is a visualization toolkit written in JavaScript that allows the creation of complex and interactive graphics in web-browsers without the need of any plugin. The data to be visualized is defined by means of simple marks such as bars, lines or dots. 
+Protovis\footnote{\url{http://vis.stanford.edu/protovis}} \TG{add the reference to the Protovis paper} is a visualization toolkit written in JavaScript that enables the creation of complex and interactive graphics in web-browsers without the need of an extra plugin. The data to be visualized is defined by means of simple marks such as bars, lines or dots. 
 
-For this definition Protovis makes intensive use of functional programming [REF] through a declarative syntax. For example, to define a bar of \ct{height=100} and \ct{width=20} (Figure \ref{fig:SimpleBar}) with a label the following code must be used
+Protovis makes intensive use of a fluent interface. For example, to define a bar of \ct{height=100} and \ct{width=20} (Figure \ref{fig:SimpleBar}) with a label the following code must be used:
+
 \begin{lstlisting} 
 new pv.Panel().width(150).height(150)
   .add(pv.Bar)
@@ -223,7 +228,8 @@ new pv.Panel().width(150).height(150)
     .text("Simple Visualization")
   .root.render();
 \end{lstlisting}
-where \ct{left} and \ct{bottom} define the panel position \ct{x,y} in which the figure is drawn.
+
+In this example, the  \ct{left} and \ct{bottom} define the panel position \ct{x,y} in which the figure is drawn.
 
 \begin{figure}
 \begin{raggedright}
@@ -238,19 +244,24 @@ where \ct{left} and \ct{bottom} define the panel position \ct{x,y} in which the 
 %: % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 \section{Generating HTML Files using a Visualization Library}\seclabel{refactoring}
 
-Given a view generated with Mondrian Easel we want to be able to export it to an HTML file using the Protovis toolkit. In addition of obtaining a similar visualization graph, interaction with it (such as drag and drop) is required. The general scenario of exportation is: 
+\TG{Mondrian Easel is just an editor tool. You generate a view with Mondrian, which is the engine.}
+
+Given a view generated with Mondrian \cite{Meye06a} we want to be able to export it to an HTML file using the Protovis toolkit. In addition of obtaining a similar visualization graph, interaction with it (such as drag and drop) is required. 
+
+\TG{This is not useful}
+The general scenario of exportation is: 
 \begin{enumerate}
-\item A user generates a view using Mondrian Easel
+\item A user generates a view using Mondrian
 \item A user chooses the option "Export as HTML"
-\item A file that re-create the view found in Mondrian Easel is generated using Protovis. 
+\item A file that re-create the view found in Mondrian is generated using Protovis. 
 \end{enumerate}
 
-\sv{What are the main advantages of this kind of visualization. What are the contributions??}
+\sv{What are the main advantages of this kind of visualization. What are the contributions??} \TG{The only contribution is that it is available on the browser. It is not scientific, just engineering. However, we can talk about the challenges of transforming the model of Mondrian in the model of Protovis. For example, we can talk about the problem of arranging the nodes / edges in layers, the scoping of drag and drop}
 
-The generation of HTML files with Protovis visualizations in Mondrian involves two main steps: (1) the creation of the dataset that contains information on which to base the graph, and (2) the description of the marks to be drawn. The accomplishment of these steps is described in detail in the next sections as well as the supported graphs. 
+The generation of HTML files with Protovis visualizations in Mondrian involves two main steps: (1) the creation of the dataset that contains information on which to base the graph, and (2) the description of the marks to be drawn. The accomplishment of these steps is described in detail in the next sections.
 
 \subsection{Generating the Datasets}
-The standard way to enter data to Protovis is by mean of a JSON (JavaScript Object Notation) description. Owing to the components to be exported are currently drawn in the Mondrian Easel canvas, the dataset description must be inferred from it. As the canvas data is represented by mean of the \ct{MOGraphElement} hierarchy, the dataset description is created through a Visitor pattern [REF GAMMA] as is shown in Figure \ref{fig:VisitorPattern}.
+The standard way to send data to Protovis is by means of a JSON (JavaScript Object Notation) descriptions. Owing to the components to be exported are currently drawn in the Mondrian canvas, the dataset description must be inferred from it. As the canvas data is represented by mean of the \ct{MOGraphElement} hierarchy, the dataset description is created through a Visitor pattern \TG{[REF GAMMA]} as is shown in Figure \ref{fig:VisitorPattern}.
 
 \begin{figure}
 \begin{centering}
@@ -260,7 +271,7 @@ The standard way to enter data to Protovis is by mean of a JSON (JavaScript Obje
 \caption{Visitor Pattern.\label{fig:VisitorPattern}}
 
 \end{figure}
-The JSON structure that we generate is created from the nodes and edges drawn in the canvas. For this reason the structure contains two arrays: nodes and links. The former contain a collection of objects that represent nodes by means of information that allows its correct visualization with Protovis. For example, given the next JSON object a node is specified
+The JSON structure that we generate is created from the nodes and edges drawn on the canvas. For this reason the structure contains two arrays: nodes and links. The former contain a collection of objects that represent nodes by means of information that allows its correct visualization with Protovis. For example, given the next JSON object a node is specified
 \begin{lstlisting} 
 {
  nodeID:0, nodeShape:"a MORectangleShape", 
@@ -271,10 +282,10 @@ The JSON structure that we generate is created from the nodes and edges drawn in
  nodeType:"parent"
 }
 \end{lstlisting}
-where \ct{nodeID} is a number that identifies a node uniquely. The variable \ct{nodeShape} indicates the kind of shape that must be drawn (in this case a rectangle).Other possible shapes are, for example, circle, label, or an image. The variable \ct{nodeName} contains the text to be displayed by the tooltip of the node. The size of a shape is indicated by \ct{nodeWidth} and \ct{nodeHeight}. The variables \ct{x} and \ct{y} are used to know the position of the canvas in which the node will be displayed. The fill and border colors of a node are indicated through the variables \ct{nodeFillColor} and \ct{nodeBorderColor}. Finally, the variable \ct{nodeType} indicate if the node is a leaf on a hierarchy or not. This variable is used to interaction purposes.
+where \ct{nodeID} is a number that identifies a node uniquely. The variable \ct{nodeShape} indicates the kind of shape that must be drawn (in this case a rectangle).Other possible shapes are, for example, circle, label, or an image. The variable \ct{nodeName} contains the text to be displayed by the tooltip of the node. The size of a shape is indicated by \ct{nodeWidth} and \ct{nodeHeight}. The variables \ct{x} and \ct{y} are used to know the position of the canvas in which the node will be displayed. The fill and border colors of a node are indicated through the variables \ct{nodeFillColor} and \ct{nodeBorderColor}. Finally, the variable \ct{nodeType} indicates if the node is a leaf on a hierarchy or not. This variable is used for interaction purposes.
 \sv{I don't know if this is clear. I used this variable to redraw correctly after a drag and drop interaction. For example, if a parent node is dragged in a DistributionMap graph, the children must be redrawn accordingly}
 
-Regarding the links, their structure is simpler than the nodes. Considerer the nex example in which a link is defined
+Regarding the links, their structure is simpler than the nodes. Consider the following example in which a link is defined:
 \begin{lstlisting} 
 {
  sourceID:1, 
@@ -282,7 +293,8 @@ Regarding the links, their structure is simpler than the nodes. Considerer the n
  edgeColor:"#9F9F9F",
 }
 \end{lstlisting}
-this object defines a link between the nodes whose IDs are 1 and 19 respectively. Also, the color of the link is specified by the object. 
+
+This object defines a link between the nodes whose IDs are 1 and 19 respectively. Also, the color of the link is specified by the object. 
 
 All the data needed to the generation of the dataset is taken from the classes \ct{MOEdge}, \ct{MONode}, and \ct{MORoot} when the visitor pattern runs through them iteratively.
 
@@ -299,9 +311,9 @@ Once the dataset is generated, the Protovis JavaScript code that creates the vis
 \item Tooltip creation
 \end{itemize}
 
-The Protovis canvas is initially created with the same size as the canvas of Mondrian Easel. However, it is automatically resized when a dragging operation is detected out of it.
+The Protovis canvas is initially created with the same size as the canvas of Mondrian. However, it is automatically resized when a dragging operation is detected out of it.
 
-As Protovis uses a declarative syntax each kind of mark is declared once. This is different only for lines which are declared individually for each link of the dataset. In this way to visualize nodes whose shape is \ct{MORectangleShape} the next code must be declared once
+As Protovis uses a declarative syntax each kind of mark is declared once \TG{What does ``declared once'' mean? It would be declared once no matter what :)}. This is different only for lines which are declared individually for each link of the dataset. In this way to visualize nodes whose shape is \ct{MORectangleShape} the next code must be declared once
 \begin{lstlisting} 
 vis.add(pv.Bar)
    .data(getNodesByShape("a MORectangleShape"))
