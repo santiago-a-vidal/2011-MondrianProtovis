@@ -178,11 +178,19 @@
 % A B S T R A C T
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 
-\begin{abstract}
-\end{abstract}
+%\begin{abstract}
+%\end{abstract}
 
 %: % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+\TG{I think it is hard to find anything scientific in this work. One idea is to position it as a tool demo (\ie engineering work). In any case, we need to describe the cases that posed a challenge. The angle can be that you basically built a transformation between the graph model of Mondrian and the model of Protovis.}
+
+\TG{The only contribution is that it is available on the browser. It is not scientific, just engineering. However, we can talk about the challenges of transforming the model of Mondrian in the model of Protovis. For example, we can talk about the problem of arranging the nodes / edges in layers, the scoping of drag and drop}
+
 \section{Introduction}\seclabel{introduction}
+
+Mondrian~\cite{Meye06a} is an agile visualization engine primarily used to visualize software\footnote{\url{http://www.moosetechnology.org/tools/mondrian}}. Mondrian support vectorial rendering made of primitive geometrical objects. Mondrian is built in Pharo and use Morphic canvas to render a visualization.
+
+We realized an experiment to render Mondrian visualizations in a web browser. This paper presents the exporter we built for Protovis\footnote{\url{http://vis.stanford.edu/protovis}}~\cite{Bost09a}, a Javascript graphical toolkit for data visualization.
 
 %problem
 
@@ -197,8 +205,6 @@
 %outline
 The paper is structured as follows.
 
-\TG{I think it is hard to find anything scientific in this work. One idea is to position it as a tool demo (\ie engineering work). In any case, we need to describe the cases that posed a challenge. The angle can be that you basically built a transformation between the graph model of Mondrian and the model of Protovis.}
-
 %\secref{problem} shows the problem we faced when trying to evolve Mondrian.
 %\secref{refactoring} describes the aspect-based solution we adopted.
 %\secref{results} presents the impact of our solution on Mondrian.
@@ -212,10 +218,10 @@ The paper is structured as follows.
 %Implementation of the visitor pattern instead of the displayOn: methods
 %Show some benchmarks. We have they in a mail with the subject bench
 
-\section{Protovis}
-Protovis\footnote{\url{http://vis.stanford.edu/protovis}} \TG{add the reference to the Protovis paper} is a visualization toolkit written in JavaScript that enables the creation of complex and interactive graphics in web-browsers without the need of an extra plugin. The data to be visualized is defined by means of simple marks such as bars, lines or dots. 
+\section{Protovis} \seclabel{protovis}
+Protovis is a visualization toolkit written in JavaScript that enables the creation of complex and interactive graphics in web-browsers without the need of an extra plugin. The data to be visualized is defined by means of simple marks such as bars, lines and dots. 
 
-Protovis makes intensive use of a fluent interface. For example, to define a bar of \ct{height=100} and \ct{width=20} (Figure \ref{fig:SimpleBar}) with a label the following code must be used:
+Protovis makes intensive use of a fluent interface, intended to build readable code. For example, the following script defines a bar of \ct{height=100} and \ct{width=20} (\figref{SimpleBar2}) with a label:
 
 \begin{lstlisting} 
 new pv.Panel().width(150).height(150)
@@ -231,37 +237,26 @@ new pv.Panel().width(150).height(150)
 
 In this example, the  \ct{left} and \ct{bottom} define the panel position \ct{x,y} in which the figure is drawn.
 
-\begin{figure}
-\begin{raggedright}
-\includegraphics[bb=20bp 743bp 100bp 812bp,scale=0.99]{SimpleBar} 
-\par\end{raggedright}
-\ab{Is there a better sexy example? Add a text maybe?}\sv{There are better examples but they are too large or there are out of scope.}
+\fig{h}{0.2}{SimpleBar2}{Example in Protovis.}
 
-\caption{Simple Visualization with Protovis.\label{fig:SimpleBar}}
-
-\end{figure}  
+%\begin{figure}
+%\begin{center}
+%\begin{raggedright}
+%\includegraphics[bb=20bp 743bp 100bp 812bp,scale=0.99]{SimpleBar} 
+%\par\end{raggedright}
+%\end{center}
+%\caption{Simple Visualization with Protovis.\label{fig:SimpleBar}}
+%\end{figure}  
 
 %: % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
-\section{Generating HTML Files using a Visualization Library}\seclabel{refactoring}
+\section{Generating HTML Files using a Visualization Library}\seclabel{generating}
 
-\TG{Mondrian Easel is just an editor tool. You generate a view with Mondrian, which is the engine.}
+Given a view generated with Mondrian we want to be able to export it to an HTML file using the Protovis toolkit. In addition of obtaining a similar visualization graph, a support for interaction is required. 
 
-Given a view generated with Mondrian \cite{Meye06a} we want to be able to export it to an HTML file using the Protovis toolkit. In addition of obtaining a similar visualization graph, interaction with it (such as drag and drop) is required. 
-
-\TG{This is not useful}
-The general scenario of exportation is: 
-\begin{enumerate}
-\item A user generates a view using Mondrian
-\item A user chooses the option "Export as HTML"
-\item A file that re-create the view found in Mondrian is generated using Protovis. 
-\end{enumerate}
-
-\sv{What are the main advantages of this kind of visualization. What are the contributions??} \TG{The only contribution is that it is available on the browser. It is not scientific, just engineering. However, we can talk about the challenges of transforming the model of Mondrian in the model of Protovis. For example, we can talk about the problem of arranging the nodes / edges in layers, the scoping of drag and drop}
-
-The generation of HTML files with Protovis visualizations in Mondrian involves two main steps: (1) the creation of the dataset that contains information on which to base the graph, and (2) the description of the marks to be drawn. The accomplishment of these steps is described in detail in the next sections.
+The generation of HTML files with Protovis visualizations in Mondrian involves two main steps: (1) the creation of the dataset that contains information on which to base the graph, and (2) the description of the marks to be drawn. The accomplishment of these steps is detailed in the following sections.
 
 \subsection{Generating the Datasets}
-The standard way to send data to Protovis is by means of a JSON (JavaScript Object Notation) descriptions. Owing to the components to be exported are currently drawn in the Mondrian canvas, the dataset description must be inferred from it. As the canvas data is represented by mean of the \ct{MOGraphElement} hierarchy, the dataset description is created through a Visitor pattern \TG{[REF GAMMA]} as is shown in Figure \ref{fig:VisitorPattern}.
+The standard way to send data to Protovis is by means of a JSON (JavaScript Object Notation) descriptions. Owing to the components to be exported are currently drawn in the Mondrian canvas, the dataset description must be inferred from it\ab{I do not understand this sentence}. As the canvas data is represented by mean of the \ct{MOGraphElement} hierarchy, the dataset description is created through a Visitor pattern~\cite{Gamm95a} as shown in Figure \ref{fig:VisitorPattern}.
 
 \begin{figure}
 \begin{centering}
@@ -271,7 +266,7 @@ The standard way to send data to Protovis is by means of a JSON (JavaScript Obje
 \caption{Visitor Pattern.\label{fig:VisitorPattern}}
 
 \end{figure}
-The JSON structure that we generate is created from the nodes and edges drawn on the canvas. For this reason the structure contains two arrays: nodes and links. The former contain a collection of objects that represent nodes by means of information that allows its correct visualization with Protovis. For example, given the next JSON object a node is specified
+The JSON structure that we generate is created from the nodes and edges composing the Mondrian view. For this reason the structure \ab{Which structure? The structure generated by our exporter written in JSON?} contains two arrays: nodes and links. The former contain a collection of objects that represent nodes by means of information that allows its correct visualization with Protovis. For example, given the next JSON object a node is specified
 \begin{lstlisting} 
 {
  nodeID:0, nodeShape:"a MORectangleShape", 
@@ -282,8 +277,8 @@ The JSON structure that we generate is created from the nodes and edges drawn on
  nodeType:"parent"
 }
 \end{lstlisting}
-where \ct{nodeID} is a number that identifies a node uniquely. The variable \ct{nodeShape} indicates the kind of shape that must be drawn (in this case a rectangle).Other possible shapes are, for example, circle, label, or an image. The variable \ct{nodeName} contains the text to be displayed by the tooltip of the node. The size of a shape is indicated by \ct{nodeWidth} and \ct{nodeHeight}. The variables \ct{x} and \ct{y} are used to know the position of the canvas in which the node will be displayed. The fill and border colors of a node are indicated through the variables \ct{nodeFillColor} and \ct{nodeBorderColor}. Finally, the variable \ct{nodeType} indicates if the node is a leaf on a hierarchy or not. This variable is used for interaction purposes.
-\sv{I don't know if this is clear. I used this variable to redraw correctly after a drag and drop interaction. For example, if a parent node is dragged in a DistributionMap graph, the children must be redrawn accordingly}
+where \ct{nodeID} is a number that identifies a node uniquely. The variable \ct{nodeShape} indicates the kind of shape that must be drawn (in this case a rectangle). Other possible shapes include circle, label and a bitmap image. The variable \ct{nodeName} contains the text to be displayed by the tooltip of the node. The size of a shape is indicated by \ct{nodeWidth} and \ct{nodeHeight}. The variables \ct{x} and \ct{y} are used to know the position of the canvas in which the node will be displayed. The fill and border colors of a node are indicated through the variables \ct{nodeFillColor} and \ct{nodeBorderColor}. Finally, the variable \ct{nodeType} indicates if the node is a leaf on a hierarchy or not. This variable is used for interaction purposes.
+\sv{I don't know if this is clear. I used this variable to redraw correctly after a drag and drop interaction. For example, if a parent node is dragged in a DistributionMap graph, the children must be redrawn accordingly} \ab{I think it is okay for now}
 
 Regarding the links, their structure is simpler than the nodes. Consider the following example in which a link is defined:
 \begin{lstlisting} 
@@ -313,7 +308,7 @@ Once the dataset is generated, the Protovis JavaScript code that creates the vis
 
 The Protovis canvas is initially created with the same size as the canvas of Mondrian. However, it is automatically resized when a dragging operation is detected out of it.
 
-As Protovis uses a declarative syntax each kind of mark is declared once \TG{What does ``declared once'' mean? It would be declared once no matter what :)}. This is different only for lines which are declared individually for each link of the dataset. In this way to visualize nodes whose shape is \ct{MORectangleShape} the next code must be declared once
+As Protovis uses a declarative syntax each kind of mark is declared once \TG{What does ``declared once'' mean? It would be declared once no matter what :)}. \ab{I do not understand the remaining of the section} This is different only for lines which are declared individually for each link of the dataset. In this way to visualize nodes whose shape is \ct{MORectangleShape} the next code must be declared once \ab{What the following code does?}\ab{What about adding a screenshot?}
 \begin{lstlisting} 
 vis.add(pv.Bar)
    .data(getNodesByShape("a MORectangleShape"))
@@ -348,26 +343,28 @@ In this case the link is defined by a \ct{Line} mark. The data is generated thro
 
 \subsection{Supported Graphs}
 
-To properly visualize the exported graphs some additional files are needed such as the Protovis library or interaction handler files. However, this need is transparent for the users because the exporter created these files when they are needed. This was implemented by means of packaging the additional files in a compressed file and then creating a binary code of them through \ct{Base64MimeConverter}. So, when an HTML file is exported, the compressed file is decoded an extracted in the same directory than the HTML file. 
+%To properly visualize the exported graphs some additional files are needed such as the Protovis library or interaction handler files. However, this need is transparent for the users because the exporter created these files when they are needed. This was implemented by means of packaging the additional files in a compressed file and then creating a binary code of them through \ct{Base64MimeConverter}. So, when an HTML file is exported, the compressed file is decoded an extracted in the same directory than the HTML file. 
 
 Currently the export method to HTML files with Protovis supports all the Mondrian visualizations composed by graphics elements such as rectangles, lines, and labels. Examples of this kind of visualizations are distribution maps, inner nodes, blueprint classes or system complexity. 
-For example a system complexity visualization shows the inheritance relationships between classes. The classes are represented through rectangles and the inheritance relationships are represented through lines (Figure \ref{fig:SistemComplexityMondrianEasel}). Additionally, the size of a class is represented by means of its height (number of methods), its width(number of attributes), and its color (number of lines of code). When this visualization is exported to an HTML file using Protovis the process described in the previous sections is run. So, a dataset and Protovis marks are described and the file is generated producing a similar visualization as is shown in Figure \ref{fig:SistemComplexityHTML}.
 
-\begin{figure*}
-\subfloat[Mondrian]{\label{fig:SistemComplexityMondrianEasel}\includegraphics[bb=15bp 700bp 225bp 810bp,clip,scale=0.95]{SistemComplexityMondrianEasel}
+\ab{Ok, but what are the limitations? Why Hapao cannot be exported?}
 
-}\subfloat[HTML]{\label{fig:SistemComplexityHTML}\includegraphics[bb=15bp 710bp 210bp 810bp,clip]{SistemComplexityHTML}
+%For example a system complexity visualization shows the inheritance relationships between classes. The classes are represented through rectangles and the inheritance relationships are represented through lines (Figure \ref{fig:SistemComplexityMondrianEasel}). Additionally, the size of a class is represented by means of its height (number of methods), its width(number of attributes), and its color (number of lines of code). When this visualization is exported to an HTML file using Protovis the process described in the previous sections is run. So, a dataset and Protovis marks are described and the file is generated producing a similar visualization as is shown in Figure \ref{fig:SistemComplexityHTML}.
 
-}
+%\begin{figure*}
+%\subfloat[Mondrian]{\label{fig:SistemComplexityMondrianEasel}\includegraphics[bb=15bp 700bp 225bp 810bp,clip,scale=0.95]{SistemComplexityMondrianEasel}
+%
+%}\subfloat[HTML]{\label{fig:SistemComplexityHTML}\includegraphics[bb=15bp 710bp 210bp 810bp,clip]{SistemComplexityHTML}
+%
+%}
+%
+%\caption{Visualization of system complexity}
+%
+%\end{figure*}
 
-\caption{Visualization of system complexity}
 
-
-\end{figure*}
-
-
-\ab{We need some example. For example, how do you translate ``view nodes: MOShape withAllSubclasses''}
-\ab{view shape rectangle height: \#numberOfMethods; width: \#numberOfAttributes. view nodes: MOShape withAllSubclasses}
+%\ab{We need some example. For example, how do you translate ``view nodes: MOShape withAllSubclasses''}
+%\ab{view shape rectangle height: \#numberOfMethods; width: \#numberOfAttributes. view nodes: MOShape withAllSubclasses}
 
 %I used the layouts given by Mondrian
 %I used Tipsy
@@ -377,7 +374,7 @@ For example a system complexity visualization shows the inheritance relationship
 %: % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 \section{Future Works}\seclabel{results}
 
-\paragraph{Better interaction support.}
+\paragraph{Better interaction support.} \ab{What can be done in Protovis? Menu? Can new visualization be opened by clicking on a node?}
 
 \paragraph{Exposure via Seaside.}
 being behind a seaside server
