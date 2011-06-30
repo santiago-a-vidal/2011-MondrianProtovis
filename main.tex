@@ -203,7 +203,7 @@ We realized an experiment to render Mondrian visualizations in a web browser. Th
 %\item lesson learnt
 
 %outline
-The paper is structured as follows.
+%The paper is structured as follows.
 
 %\secref{problem} shows the problem we faced when trying to evolve Mondrian.
 %\secref{refactoring} describes the aspect-based solution we adopted.
@@ -253,7 +253,7 @@ In this example, the  \ct{left} and \ct{bottom} define the panel position \ct{x,
 
 Given a view generated with Mondrian we export it to an HTML file using the Protovis toolkit. In addition of obtaining a similar visualization graph, a support for interaction is required. 
 
-The generation of HTML files with Protovis visualizations in Mondrian involves two main steps: (1) the creation of the dataset that contains information on which to base the graph, and (2) the description of the marks \ab{visual component?}\sv{Yes, we can put visual component. Mark is the name given by Protovis to them.} to be drawn. The accomplishment of these steps is detailed in the following sections.
+The generation of HTML files with Protovis visualizations in Mondrian involves two main steps: (1) the creation of the dataset that contains information on which to base the graph, and (2) the description of the visual component (called ``marks'' following the Protovis terminology) to be drawn. The accomplishment of these steps is detailed in the following sections.
 
 \subsection{Generating the Datasets}
 The standard way to provide data to Protovis is by means of JSON (JavaScript Object Notation) descriptions. 
@@ -283,7 +283,9 @@ Each node is described as a JSON object. For example:
 }
 \end{lstlisting}
 
-where \ct{nodeID} is a number that identifies a node uniquely. The variable \ct{nodeShape} indicates the kind of shape that must be drawn (in this case a rectangle)\ab{Where nodeShape comes from? Is it something of JSON? If no, why is it there?}\sv{JSON is just a kind of notation. nodeShape it is used to know what mark to draw. We obtained it from "aNode shape asString" when a Node is visited. }. Other possible shapes include circle, label and a bitmap image\ab{is this offered by Protovis or by Mondrian?}\sv{Both support these kind of shapes. But I'm just giving examples}. The variable \ct{nodeName} contains the text to be displayed by the tooltip of the node. The size of a shape is indicated by \ct{nodeWidth} and \ct{nodeHeight}. The variables \ct{x} and \ct{y} are used to know the position of the canvas in which the node will be displayed. The fill and border colors of a node are indicated through the variables \ct{nodeFillColor} and \ct{nodeBorderColor}. Finally, the variable \ct{nodeType} indicates if the node is a leaf on a hierarchy or not. This variable is used for interaction purposes by Protovis \sv{I think that is must be "in Protovis". That is because the variable is used by the "DragWithChildRestriction.js" file that I rewrite to improve the drag and drop}.
+where \ct{nodeID} is a number that identifies a node uniquely. The variable \ct{nodeShape} indicates the kind of shape that must be drawn (in this case a rectangle). Other possible shapes include circle, label and a bitmap image.
+%\ab{is this offered by Protovis or by Mondrian?}\sv{Both support these kind of shapes. But I'm just giving examples}
+The variable \ct{nodeName} contains the text to be displayed by the tooltip of the node. The size of a shape is indicated by \ct{nodeWidth} and \ct{nodeHeight.} The variables \ct{x} and \ct{y} are used to know the position of the canvas in which the node will be displayed. The fill and border colors of a node are indicated through the variables \ct{nodeFillColor} and \ct{nodeBorderColor}. Finally, the variable \ct{nodeType} indicates if the node is a leaf on a hierarchy or not. This variable is used for interaction purposes by Protovis.% \sv{I think that is must be "in Protovis". That is because the variable is used by the "DragWithChildRestriction.js" file that I rewrite to improve the drag and drop}.
 
 Regarding the links, their structure is simpler than the nodes. Consider the following example in which a link is defined:
 \begin{lstlisting} 
@@ -313,7 +315,7 @@ Once the dataset is generated, the Protovis JavaScript code that creates the vis
 
 The Protovis canvas is initially created with the same size as the canvas of Mondrian. However, it is automatically resized when a dragging operation is detected out of it.
 
-As Protovis uses a declarative syntax for each mark.\sv{Is this sentence incomplete?}
+%As Protovis uses a declarative syntax for each mark.\sv{Is this sentence incomplete?}
 % is declared once \TG{What does ``declared once'' mean? It would be declared once no matter what :)}. \ab{I do not understand the remaining of the section} \sv{In contrast with other visualization toolkits in Protovis you don't need a loop over the nodes to declare them. In Protovis each mark is declared only in one occasion and the data is set through the "data()" method. So, the following code declares all the possible bars that are going to be drawn depending on the values of the dataset (and this code is only declared in one occasion in the html file). However, I couldn't use this kind of declaration with the links because of implementation restrictions of Protovis. So, I declared one line mark for each link. This difference can be seen in a Software complexity visualization (There is only 1 bar declaration but a lot of lines).} This is different only for lines which are declared individually for each link of the dataset. 
 In this way to visualize nodes whose shape is \ct{MORectangleShape} the next code must be declared once 
 
@@ -355,7 +357,7 @@ In this case the link is defined by a \ct{Line} mark. The data is generated thro
 
 Currently the export method to HTML files with Protovis supports all the Mondrian visualizations composed by graphics elements such as rectangles, lines, and labels. Examples of this kind of visualizations are distribution maps, inner nodes, blueprint classes or system complexity. 
  
-\ab{Ok, but what are the limitations? Why Hapao cannot be exported?}\sv{I answered below}
+%\ab{Ok, but what are the limitations? Why Hapao cannot be exported?}\sv{I answered below}
 However, other complex Mondrian visualizations such as the created with Hapao are not supported yet. The main problem to be addressed is that, for example, Hapao uses the Mondrian visualization capabilities to create graphs inside tooltips which have the same behavior than those drawn in the canvas (eg. interaction or tooltips). This an other minor functionalities, such as multi-line labels, are not currently supported by Protovis. For these reasons, the exporter must extends Protovis by means of using other JavaScript libraries to add these capabilities.
 
 
@@ -384,7 +386,7 @@ However, other complex Mondrian visualizations such as the created with Hapao ar
 %: % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 \section{Future Works}\seclabel{results}
 
-\paragraph{Dedicated layout and node description.} Protovis offers numerous layouts and graph representation. Mondrian should provide a class \ct{MOProtovisLayout} to take advantage of this \sv{.}
+\paragraph{Dedicated layout and node description.} Protovis offers numerous layouts and graph representation. Mondrian should provide a class \ct{MOProtovisLayout} to take advantage of this.
 
 %\paragraph{Better interaction support.} \ab{What can be done in Protovis? Menu? Can new visualization be opened by clicking on a node?} \sv{Hmmmm. I don't know if a popup menu can be implemented. Maybe with an external JavaScript library. I think that we can do it, Protovis has mechanisms to handle events}
 
